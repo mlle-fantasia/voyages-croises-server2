@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { getManager } from "typeorm";
 import { Articles } from "../entity/Articles";
+import { Users } from "../entity/Users";
 import { getConnection } from "typeorm";
 const fs = require("fs-extra");
 const path = require("path");
+var jwt = require("jsonwebtoken");
 
 /**
  * post article
@@ -35,6 +37,12 @@ export async function articlesSaveAction(request: Request, response: Response) {
  * Saves given article.
  */
 export async function articlesPutAction(request: Request, response: Response) {
+
+	// get auteur
+	let token = jwt.verify(request.headers.authorization, process.env.TOKEN_KEY);
+	const userRepository = getManager().getRepository(Users);
+	const user = await userRepository.findOne({ where: { id: token.id } });
+
 	// get a post repository to perform operations with post
 	const articleRepository = getManager().getRepository(Articles);
 	// load a artticle by a given post id
@@ -46,6 +54,9 @@ export async function articlesPutAction(request: Request, response: Response) {
 	article.order = request.body.order;
 	article.visible = request.body.visible;
 	article.date = request.body.date;
+	article.user = user
+	article.category = request.body.category
+	article.subcategory = request.body.subcategory
 
 	// save received post
 	await articleRepository.save(article);

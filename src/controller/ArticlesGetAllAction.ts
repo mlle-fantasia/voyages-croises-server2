@@ -87,7 +87,7 @@ export async function articlesGetByIdAction(request: Request, response: Response
 			
 			// get a post repository to perform operations with post
 			const articleRepository = getManager().getRepository(Articles);
-			const article = await articleRepository.findOne(request.params.id, { relations: ["comments", "category","subcategory" ] });
+			const article = await articleRepository.findOne(request.params.id, { relations: ["comments", "category","subcategory", "user" ] });
 			// if post was not found return 404 to the client 
 			if (!article) {
 				response.status(404);
