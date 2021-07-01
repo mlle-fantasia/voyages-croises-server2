@@ -5,8 +5,10 @@ import {
 	articlesPutAction,
 	articlesPostMiniatureAction,
 	articlesDeleteArticlesAction,
+	articlesPutByIdCommentAction
 } from "./controller/ArticlesSaveAction";
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
+import { adminGetAllPagesAction, adminGetOnePageAction , pagePutAction , pagePostAction} from "./controller/PagesAction";
 
 
 import { Request, Response } from "express";
@@ -54,6 +56,12 @@ export const AppRoutes = [
 		path: "/articles/:id",
 		method: "get",
 		action: articlesGetByIdAction,
+		middlewares: [],
+	},
+	{
+		path: "/articles/:id/newcomment",
+		method: "put",
+		action: articlesPutByIdCommentAction,
 		middlewares: [],
 	},
 	{
@@ -118,4 +126,29 @@ export const AppRoutes = [
 		action: articlesGetMiniatureAction,
 		middlewares: [],
 	},
+	{
+		path: "/admin/pages/list",
+		method: "get",
+		action: adminGetAllPagesAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/pages/:id",
+		method: "get",
+		action: adminGetOnePageAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/pages/add",
+		method: "post",
+		action: pagePostAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/pages/:id",
+		method: "put",
+		action: pagePutAction,
+		middlewares: [authMiddleware],
+	},
+	
 ];

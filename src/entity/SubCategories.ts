@@ -8,8 +8,8 @@ export class SubCategories {
 	@PrimaryGeneratedColumn({ name: "sca_id" })
 	id: number;
 
-	@Column({ name: "sca_key", default:"" })
-    key: string;
+	@Column({ name: "sca_value", default:"" })
+    value: string;
 
     @Column({ name: "sca_text", default:"" })
 	text: string;

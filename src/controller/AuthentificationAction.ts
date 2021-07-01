@@ -39,7 +39,7 @@ const bcrypt = require("bcrypt");
  */
 export async function authAction(request: Request, response: Response) {
 	const userRepository = getManager().getRepository(Users);
-	console.log("request.body", request.body)
+	console.log("request.body in authAction", request.body)
 	const user = await userRepository.findOne({
 		where: {
 			email: request.body.login,

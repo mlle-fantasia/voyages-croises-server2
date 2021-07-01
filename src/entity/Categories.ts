@@ -8,8 +8,8 @@ export class Categories {
 	@PrimaryGeneratedColumn({ name: "ca_id" })
 	id: number;
 
-	@Column({ name: "ca_key", default:"" })
-    key: string;
+	@Column({ name: "ca_value", default:"" })
+    value: string;
 
     @Column({ name: "ca_text", default:"" })
 	text: string;

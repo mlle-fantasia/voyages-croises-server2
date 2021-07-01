@@ -18,6 +18,6 @@ export class Texts {
 	@UpdateDateColumn()
     updateddAt: Date;
 
-	@OneToMany((type) => Pages, (Pages) => Pages.texts)
-	pages: Pages[];
+	@OneToMany((type) => Pages, (Pages) => Pages.texts, { nullable: true })
+	pages: Pages;
 }

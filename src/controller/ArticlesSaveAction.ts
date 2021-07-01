@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getManager } from "typeorm";
 import { Articles } from "../entity/Articles";
+import { Comments } from "../entity/Comments";
 import { Users } from "../entity/Users";
 import { getConnection } from "typeorm";
 const fs = require("fs-extra");
@@ -64,6 +65,37 @@ export async function articlesPutAction(request: Request, response: Response) {
 	// return saved post back
 	response.send(article);
 }
+
+
+/**
+ * add new comment to article
+ * Saves given article.
+ */
+ export async function articlesPutByIdCommentAction(request: Request, response: Response) {
+
+
+	// get a post repository to perform operations with post
+	const articleRepository = getManager().getRepository(Articles);
+	// load a artticle by a given post id
+	const article = await articleRepository.findOne(request.params.id);
+
+	 let numImage = Math.floor(Math.random() * 3); // de 0 à 2
+	 let dataComment = {
+		title: request.body.title,
+		contenu: request.body.contenu,
+		visible: request.body.visible,
+		name: request.body.name,
+		email: request.body.email,
+		image:numImage,
+		articleId : article.id
+	 }
+	const commentsRepository = getManager().getRepository(Comments);
+	await commentsRepository.save(dataComment);
+
+	// return saved post back
+	response.send("ok");
+}
+
 
 // /**
 //  * 

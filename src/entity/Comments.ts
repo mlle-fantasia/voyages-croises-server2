@@ -20,7 +20,10 @@ export class Comments {
     name: string;
     
     @Column({ name: "com_email" , default:"" })
-    email: string;
+	email: string;
+
+	@Column({ name: "com_image" , default:1 })
+    image: number;
     
 	@CreateDateColumn()
 	createdAt: Date;

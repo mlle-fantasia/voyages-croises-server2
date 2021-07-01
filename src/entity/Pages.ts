@@ -24,6 +24,6 @@ export class Pages {
     @UpdateDateColumn()
     updateddAt: Date;
 
-	@OneToMany((type) => Texts, (Texts) => Texts.pages)
+	@OneToMany((type) => Texts, (Texts) => Texts.pages, { nullable: true })
 	texts: Texts[];
 }
