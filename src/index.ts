@@ -56,8 +56,8 @@ createConnection()
 		});
 
 		// run app
-		app.listen(3001);
+		app.listen(3002);
 
-		console.log("Express application is up and running on port 3001");
+		console.log("Express application is up and running on port 3002");
 	})
 	.catch((error) => console.log("TypeORM connection error: ", error));
