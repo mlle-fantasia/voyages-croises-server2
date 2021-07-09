@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getManager, getRepository, getConnection, SimpleConsoleLogger } from "typeorm";
 /// les entités
 import { Categories } from "../entity/Categories";
-import { SubCategories } from "../entity/SubCategories";
+import { Tags } from "../entity/Tags";
 /// les dépendences
 const fs = require("fs-extra");
 const path = require("path");
@@ -41,10 +41,10 @@ console.log(newCat)
 /**
  *  * post 
  */
- export async function AdminPostSubCategoryAction(request: Request, response: Response) {
-	const Repository = getManager().getRepository(Categories);
+ export async function AdminPostTagAction(request: Request, response: Response) {
+	const Repository = getManager().getRepository(Tags);
 	
-	let cat = new SubCategories();
+	let cat = new Tags();
 	cat.value = request.body.value;
 	cat.text = request.body.text;
 

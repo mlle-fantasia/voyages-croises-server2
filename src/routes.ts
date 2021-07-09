@@ -1,5 +1,5 @@
-import { userGetAction, userPutAction, } from "./controller/UsersAction";
-import { articlesGetAllAction, articlesGetAllAdminAction , articlesGetMiniatureAction, articlesGetByIdAction, adminArticlesGetByIdAction} from "./controller/ArticlesGetAllAction";
+import { userGetAction,userGetOneAction, userPutAction,userPostAction } from "./controller/UsersAction";
+import { adminHomeStatsAction, articlesGetAllAction, articlesGetAllAdminAction , articlesGetMiniatureAction, articlesGetByIdAction, adminArticlesGetByIdAction} from "./controller/ArticlesGetAllAction";
 import {
 	articlesSaveAction,
 	articlesPutAction,
@@ -65,13 +65,25 @@ export const AppRoutes = [
 		middlewares: [],
 	},
 	{
-		path: "/user",
+		path: "/admin/users",
 		method: "get",
 		action: userGetAction,
-		middlewares: [],
+		middlewares: [authMiddleware],
 	},
 	{
-		path: "/admin/user/modifier/:id",
+		path: "/admin/users/:id",
+		method: "get",
+		action: userGetOneAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/users/add",
+		method: "post",
+		action: userPostAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/users/:id",
 		method: "put",
 		action: userPutAction,
 		middlewares: [authMiddleware],
@@ -90,6 +102,12 @@ export const AppRoutes = [
 		action: articlesHiddenAction,
 		middlewares: [authMiddleware],
 	}, */
+	{
+		path: "/admin/home",
+		method: "get",
+		action: adminHomeStatsAction,
+		middlewares: [authMiddleware],
+	},
 	{
 		path: "/admin/articles/list",
 		method: "get",

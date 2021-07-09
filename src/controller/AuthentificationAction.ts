@@ -52,7 +52,8 @@ export async function authAction(request: Request, response: Response) {
 		return;
 	}
 	let hash = user.password;
-		bcrypt.compare(request.body.pass, hash).then(async function (res) {
+	bcrypt.compare(request.body.pass, hash).then(async function (res) {
+		console.log(res, request.body.pass, hash)
  			if (res) {
 				let token = generateToken(user);
 				user.password = "";

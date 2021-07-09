@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn,UpdateDateColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn,UpdateDateColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 import { Comments } from "./Comments";
 import { Files } from "./Files";
 import { Users } from "./Users";
 import { Categories } from "./Categories";
-import { SubCategories } from "./SubCategories";
+import { Tags } from "./Tags";
 
 @Entity({ name: "articles" })
 export class Articles {
@@ -52,8 +52,9 @@ export class Articles {
 	@ManyToOne((type) => Categories, (Categories) => Categories.articles, { nullable: true })
 	category: Categories;
 
-	@ManyToOne((type) => SubCategories, (SubCategories) => SubCategories.articles, { nullable: true })
-	subcategory: SubCategories;
+	@ManyToMany((type) => Tags, (Tags) => Tags.articles, { nullable: true })
+	@JoinTable()
+	tags: Tags[];
 }
 
 /* export async function CreateArticleEmpty() {

@@ -57,7 +57,7 @@ export async function articlesPutAction(request: Request, response: Response) {
 	article.date = request.body.date;
 	article.user = user
 	article.category = request.body.category
-	article.subcategory = request.body.subcategory
+	article.tags = request.body.tags
 
 	// save received post
 	await articleRepository.save(article);

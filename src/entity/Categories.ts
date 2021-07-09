@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { SubCategories } from "./SubCategories";
 import { Articles } from "./Articles";
 
 
@@ -13,9 +12,6 @@ export class Categories {
 
     @Column({ name: "ca_text", default:"" })
 	text: string;
-	
-	@OneToMany((type) => SubCategories, (SubCategories) => SubCategories.categories, { nullable: true })
-	subcategories: SubCategories[];
 
 	@OneToMany((type) => Articles, (Articles) => Articles.category)
 	articles: Articles[];

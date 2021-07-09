@@ -1,13 +1,14 @@
-import { ifError } from "assert";
 import { Request, Response } from "express";
 import { getManager, getRepository, getConnection } from "typeorm";
 /// les entités
 import { Articles } from "../entity/Articles";
 import { Categories } from "../entity/Categories";
 import { Users } from "../entity/Users";
+import { Tags } from "../entity/Tags";
 /// les dépendences
 const fs = require("fs-extra");
 const path = require("path");
+var jwt = require("jsonwebtoken");
 
 /**
  * get all
@@ -27,6 +28,42 @@ export async function articlesGetAllAction(request: Request, response: Response)
 	
 	response.send(entities);
 }
+
+
+
+/**
+ *  * get all
+ * get les stats à afficher sur  la page d'accueil admin : le derniers article publié,  le dernier article de l'utilisateur, les nouveau commentaires,  le nombre d'articles total, le nombre de  followers...
+ */
+ export async function adminHomeStatsAction(request: Request, response: Response) {
+	 const articleRepository = getManager().getRepository(Articles);
+
+	 // dernier article publié sur le site
+	 const lastArticle = await articleRepository.find({ select: ["id", "title", "resume", "date", ], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 1, });
+
+	 // dernier article publié par l'utilisateur
+	 //// get id  user
+	 let token = jwt.verify(request.headers.authorization, process.env.TOKEN_KEY);
+	 const userRepository = getManager().getRepository(Users);
+	 /// get article
+	 const lastArticleUser = await getRepository(Articles).createQueryBuilder("article")
+    .leftJoinAndSelect("article.user", "user")
+    .leftJoinAndSelect("article.category", "category")
+		 .where("user.id = :id", { id: token.id })
+		 .andWhere('article.visible = :visible', { visible: true })
+		 .orderBy("article.date", "DESC").limit(1)
+    .getOne();
+	 
+	 let responseData = {
+		 lastArticle,
+		 lastArticleUser
+	 }
+
+	response.send(responseData);
+ }
+
+
+
 /**
  *  * get all
  * Loads all posts from the database y compris ceux hidden. cette fonction sert à afficher sur l'espace admin
@@ -47,10 +84,9 @@ export async function articlesGetAllAdminAction(request: Request, response: Resp
  * Loads post by a given id.
  */
 export async function articlesGetByIdAction(request: Request, response: Response) {
-
 	// get a post repository to perform operations with post
 	const articleRepository = getManager().getRepository(Articles);
-	const article = await articleRepository.findOne(request.params.id, { relations: ["comments", "category","subcategory", "user" ] });
+	const article = await articleRepository.findOne(request.params.id, { relations: ["comments", "category", "tags", "user"] });
 	// if post was not found return 404 to the client
 	if (!article) {
 		response.status(404);
@@ -73,7 +109,7 @@ export async function articlesGetByIdAction(request: Request, response: Response
  * Loads articles by a given id. pour l'espace admin garge aussi les catégores
  */
  export async function adminArticlesGetByIdAction(request: Request, response: Response) {
-	 let dataResponse = {article:{},categories:[]};
+	 let dataResponse = {article:{},categories:[], tags:[]};
 		if (request.params.id === "-1") {
 			let columns = await getConnection().getMetadata(Articles).ownColumns.map(column =>   column.propertyName );
 			let defaults = await getConnection().getMetadata(Articles).ownColumns.map(column => column.default );
@@ -87,7 +123,7 @@ export async function articlesGetByIdAction(request: Request, response: Response
 			
 			// get a post repository to perform operations with post
 			const articleRepository = getManager().getRepository(Articles);
-			const article = await articleRepository.findOne(request.params.id, { relations: ["comments", "category","subcategory", "user" ] });
+			const article = await articleRepository.findOne(request.params.id, { relations: ["comments", "category","tags", "user" ] });
 			// if post was not found return 404 to the client 
 			if (!article) {
 				response.status(404);
@@ -99,8 +135,13 @@ export async function articlesGetByIdAction(request: Request, response: Response
 	 
 	//load les categories
 	const catRepository = getManager().getRepository(Categories);
-	const cat = await catRepository.find({relations : ['subcategories']});
-	dataResponse.categories = cat
+	const cat = await catRepository.find();
+	 dataResponse.categories = cat
+	 
+	 	//load les tags
+	const tagsRepository = getManager().getRepository(Tags);
+	const tags = await tagsRepository.find();
+	dataResponse.tags = tags
 		
 	response.send(dataResponse);
 	}
