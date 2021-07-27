@@ -1,4 +1,4 @@
-import { userGetAction,userGetOneAction, userPutAction,userPostAction } from "./controller/UsersAction";
+import { userGetAction,userGetOneAction, userPutAction,userPostAction, newMessageAction } from "./controller/UsersAction";
 import { adminHomeStatsAction, articlesGetAllAction, articlesGetAllAdminAction , articlesGetMiniatureAction, articlesGetByIdAction, adminArticlesGetByIdAction} from "./controller/ArticlesGetAllAction";
 import {
 	articlesSaveAction,
@@ -8,7 +8,8 @@ import {
 	articlesPutByIdCommentAction
 } from "./controller/ArticlesSaveAction";
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
-import { adminGetAllPagesAction, adminGetOnePageAction , pagePutAction , pagePostAction} from "./controller/PagesAction";
+import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction} from "./controller/PagesAction";
+import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
 
 
 import { Request, Response } from "express";
@@ -62,6 +63,12 @@ export const AppRoutes = [
 		path: "/articles/:id/newcomment",
 		method: "put",
 		action: articlesPutByIdCommentAction,
+		middlewares: [],
+	},
+	{
+		path: "/pages/:key",
+		method: "get",
+		action: siteGetOnePageAction,
 		middlewares: [],
 	},
 	{
@@ -145,6 +152,12 @@ export const AppRoutes = [
 		middlewares: [],
 	},
 	{
+		path: "/newmessage",
+		method: "post",
+		action: newMessageAction,
+		middlewares: [],
+	},
+	{
 		path: "/admin/pages/list",
 		method: "get",
 		action: adminGetAllPagesAction,
@@ -159,13 +172,32 @@ export const AppRoutes = [
 	{
 		path: "/admin/pages/add",
 		method: "post",
-		action: pagePostAction,
+		action: adminPagePostAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/pages/delete/:id",
+		method: "delete",
+		action: adminPageDeleteAction,
 		middlewares: [authMiddleware],
 	},
 	{
 		path: "/admin/pages/:id",
 		method: "put",
-		action: pagePutAction,
+		action: adminPagePutAction,
+		middlewares: [authMiddleware],
+	},
+	// texts
+	{
+		path: "/admin/texts/add",
+		method: "post",
+		action: adminPostTextAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/texts/edit",
+		method: "put",
+		action: adminPutTextsAction,
 		middlewares: [authMiddleware],
 	},
 	

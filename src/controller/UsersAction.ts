@@ -70,3 +70,8 @@ export async function userPostAction(request: Request, response: Response) {
 }
 
 
+export async function newMessageAction(request: Request, response: Response) {
+	console.log("request.body", request.body,)
+	response.send("ok");
+}
+

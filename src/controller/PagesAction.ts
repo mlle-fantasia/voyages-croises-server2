@@ -8,6 +8,23 @@ import { Texts } from "../entity/Texts";
 const fs = require("fs-extra");
 const path = require("path");
 
+
+
+/**
+ *  * get by key
+ * Loads page by a given key.  pour le site public
+ */
+ export async function siteGetOnePageAction(request: Request, response: Response) {
+	
+		const articleRepository = getManager().getRepository(Pages);
+		const entities = await articleRepository.findOne({ where: { key: request.params.key }, relations: ["texts" ] });
+		console.log(entities)
+	
+		response.send(entities);
+	}
+
+
+
 /**
  * get all pour admin
  * 
@@ -24,15 +41,11 @@ export async function adminGetAllPagesAction(request: Request, response: Respons
  * Loads page by a given id.
  */
 export async function adminGetOnePageAction(request: Request, response: Response) {
-console.log("je passe", request.params.id)
 	// get a post repository to perform operations with post
 
 	const articleRepository = getManager().getRepository(Pages);
 	const entities = await articleRepository.findOne(request.params.id, { relations: ["texts" ] });
 	console.log(entities)
-
-/* 	const pageRepository = getManager().getRepository(Pages);
-	const page = await pageRepository.find({ where: { id: parseInt(request.params.id) }, relations:["texts"] }); */
 
 	// if post was not found return 404 to the client
 /* 	if (!page) {
@@ -41,22 +54,16 @@ console.log("je passe", request.params.id)
 		return;
 	} */
 
-	// get texts
-/* 	const Repository = getManager().getRepository(Texts);
-	const texts = await Repository.find({ where: { page: page.id } });
-	console.log(texts); */
 
-	let dataResponse = {
-	//	page,
-	};
-	response.send(dataResponse);
+
+	response.send(entities);
 }
 
 /**
  * post article
  * Saves given new article .
  */
- export async function pagePostAction(request: Request, response: Response) {
+ export async function adminPagePostAction(request: Request, response: Response) {
 	// get a post repository to perform operations with post
 	const pageRepository = getManager().getRepository(Pages);
 	
@@ -65,6 +72,8 @@ console.log("je passe", request.params.id)
 	page.key = request.body.key;
 	page.in_menuprincipal = request.body.in_menuprincipal;
 	page.in_menufooter = request.body.in_menufooter;
+	page.have_image = request.body.have_image;
+	 
 
 	const newPage = pageRepository.create(page);
 console.log(newPage)
@@ -80,7 +89,7 @@ console.log(newPage)
  * put page
  * Saves given .
  */
-export async function pagePutAction(request: Request, response: Response) {
+export async function adminPagePutAction(request: Request, response: Response) {
 
 	// get a post repository to perform operations with post
 	const pageRepository = getManager().getRepository(Pages);
@@ -88,9 +97,11 @@ export async function pagePutAction(request: Request, response: Response) {
 	const page = await pageRepository.findOne(request.params.id);
 
 	page.name = request.body.name;
+	page.image = request.body.image;
 	page.key = request.body.key;
 	page.in_menuprincipal = request.body.in_menuprincipal;
 	page.in_menufooter = request.body.in_menufooter;
+	page.have_image = request.body.have_image;
 
 	// save received post
 	await pageRepository.save(page);
@@ -99,23 +110,49 @@ export async function pagePutAction(request: Request, response: Response) {
 	response.send(page);
 }
 
+/**
+ * delete by given id .
+ */
+export async function adminPageDeleteAction(request: Request, response: Response) {
+	 
+	await getConnection().createQueryBuilder().delete().from(Pages).where("id = :id", { id: request.params.id }).execute();
+	response.send("ok");
 
+}
+
+
+
+
+export async function pagesPostImageAction(req, res) {
+	const Repository = getManager().getRepository(Pages);
+	const page = await Repository.findOne(req.params.id);
+
+	let ext = path.extname(req.files.image.name).toLowerCase();
+	fs.ensureDirSync(process.cwd() + "/uploads/page");
+	let filenameOrigin = process.cwd() + "/uploads/pages/page" + req.params.id + ext;
+	req.files.image.mv(filenameOrigin, async function (err) {
+		if (err) return res.status(500).send(err);
+
+		page.image = req.files.image.name;
+		await Repository.save(page);
+
+		res.send("ok");
+	});
+}
 
 
 /**
  * 
  * @param req 
  * @param res 
- * récupère l'image miniature de l'article enregistrée dans uploads/miniature/ 
- * avec l'id de l'article passé en params à la route
  */
-export async function articlesGetMiniatureAction(req, res) {
-	const articleRepository = getManager().getRepository(Articles);
-	const article = await articleRepository.findOne(req.params.id);
+export async function pagesGetImageAction(req, res) {
+	const Repository = getManager().getRepository(Pages);
+	const page = await Repository.findOne(req.params.id);
 	let ext = "";
-	if (article.image) ext = path.extname(article.image).toLowerCase();
+	if (page.image) ext = path.extname(page.image).toLowerCase();
 
-	let filenameDest = process.cwd() + "/uploads/images/article" + req.params.id + ext;
+	let filenameDest = process.cwd() + "/uploads/pages/page" + req.params.id + ext;
 	if (!fs.existsSync(filenameDest)) return res.send("not_found");
 
 	let readStream = fs.createReadStream(filenameDest);

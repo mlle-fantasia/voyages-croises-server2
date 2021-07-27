@@ -11,6 +11,12 @@ export class Pages {
 
     @Column({ name: "pa_key", default:"" })
     key: string;
+
+    @Column({ name: "pa_image" , nullable: true, default:""})
+    image: string;
+    
+    @Column({ name: "pa_haveimage" , default:true})
+	have_image: boolean;
     
     @Column({ name: "pa_inmenufooter", default:false })
     in_menufooter: boolean;

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn,CreateDateColumn, UpdateDateColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn,CreateDateColumn, UpdateDateColumn, Column, ManyToOne } from "typeorm";
 import { Pages } from "./Pages";
 
 @Entity({ name: "texts" })
@@ -9,7 +9,7 @@ export class Texts {
 	@Column({ name: "te_key", default:"" })
     key: string;
 
-    @Column({ name: "te_text", default:"" })
+    @Column({type: "text",  name: "te_text", default:"" })
     text: string;
     
 	@CreateDateColumn()
@@ -18,6 +18,6 @@ export class Texts {
 	@UpdateDateColumn()
     updateddAt: Date;
 
-	@OneToMany((type) => Pages, (Pages) => Pages.texts, { nullable: true })
+	@ManyToOne((type) => Pages, (Pages) => Pages.texts, { nullable: true })
 	pages: Pages;
 }
