@@ -15,13 +15,23 @@ var jwt = require("jsonwebtoken");
 export async function articlesSaveAction(request: Request, response: Response) {
 	// get a post repository to perform operations with post
 	const articleRepository = getManager().getRepository(Articles);
+
+	// get auteur
+	let token = jwt.verify(request.headers.authorization, process.env.TOKEN_KEY);
+	const userRepository = getManager().getRepository(Users);
+	const user = await userRepository.findOne({ where: { id: token.id } });
 	
 	let article = new Articles();
 	article.title = request.body.title;
 	article.resume = request.body.resume;
 	article.miniature = request.body.miniature;
 	article.contenu = request.body.contenu;
-	article.order = parseInt(request.body.order === "" ? 1000 :request.body.order);
+	article.visible = request.body.visible;
+	article.date = request.body.date;
+	article.order = parseInt(request.body.order === "" ? 1000 : request.body.order);
+	article.user = user
+	article.category = request.body.category
+	article.tags = request.body.tags
 
 	const newArticles = articleRepository.create(article);
 

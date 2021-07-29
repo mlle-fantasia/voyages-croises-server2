@@ -16,11 +16,23 @@ const path = require("path");
  */
  export async function siteGetOnePageAction(request: Request, response: Response) {
 	
-		const articleRepository = getManager().getRepository(Pages);
-		const entities = await articleRepository.findOne({ where: { key: request.params.key }, relations: ["texts" ] });
-		console.log(entities)
-	
-		response.send(entities);
+		const pageRepository = getManager().getRepository(Pages);
+	 const entitie = await pageRepository.findOne({ where: { key: request.params.key }, relations: ["texts"] });
+	 let responseData = { page: entitie, apropos:{}, lastarticles:[] }
+	 
+	 if (request.query.aside) {
+		 const textRepository = getManager().getRepository(Texts);
+		 const aproposTxt = await textRepository.findOne({ where: { key: "résumé à propos" } });
+		 console.log("aproposTxt", aproposTxt)
+		 if (aproposTxt) responseData.apropos = aproposTxt;
+		 
+		 const articleRepository = getManager().getRepository(Articles);
+		 const entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 3, });
+		 if (entities.length) responseData.lastarticles = entities;
+	 }
+
+
+		response.send(responseData);
 	}
 
 
@@ -123,12 +135,12 @@ export async function adminPageDeleteAction(request: Request, response: Response
 
 
 
-export async function pagesPostImageAction(req, res) {
+export async function adminPagePostImageAction(req, res) {
 	const Repository = getManager().getRepository(Pages);
 	const page = await Repository.findOne(req.params.id);
 
 	let ext = path.extname(req.files.image.name).toLowerCase();
-	fs.ensureDirSync(process.cwd() + "/uploads/page");
+	fs.ensureDirSync(process.cwd() + "/uploads/pages");
 	let filenameOrigin = process.cwd() + "/uploads/pages/page" + req.params.id + ext;
 	req.files.image.mv(filenameOrigin, async function (err) {
 		if (err) return res.status(500).send(err);

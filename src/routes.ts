@@ -8,7 +8,7 @@ import {
 	articlesPutByIdCommentAction
 } from "./controller/ArticlesSaveAction";
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
-import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction} from "./controller/PagesAction";
+import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
 
 
@@ -186,6 +186,18 @@ export const AppRoutes = [
 		method: "put",
 		action: adminPagePutAction,
 		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/pages/:id/image",
+		method: "post",
+		action: adminPagePostImageAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/pages/:id/image",
+		method: "get",
+		action: pagesGetImageAction,
+		middlewares: [],
 	},
 	// texts
 	{

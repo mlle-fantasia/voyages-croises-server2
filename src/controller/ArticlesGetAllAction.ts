@@ -23,8 +23,10 @@ export async function articlesGetAllAction(request: Request, response: Response)
 		.where("article.visible = :visible", { visible: 1 })
 		.orderBy("article.date", "DESC")
 		.getMany(); */
+	let limit = 3
+	if (request.query.page === "home") limit = 6;
 	const articleRepository = getManager().getRepository(Articles);
-	const entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible:true }, relations: ["user", "category" ], order: {date: 'DESC'}, take:3, });
+	const entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible:true }, relations: ["user", "category" ], order: {date: 'DESC'}, take:limit});
 	
 	response.send(entities);
 }
