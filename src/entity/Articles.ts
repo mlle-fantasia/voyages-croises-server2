@@ -31,6 +31,9 @@ export class Articles {
 	@Column({ name: "ar_image" , nullable: true, default:""})
 	image: string;
 
+	@Column({ name: "ar_image_alt" , default:"" })
+	image_alt: string;
+
 	@Column({ name: "ar_visible" , default:false})
 	visible: boolean;
 
@@ -38,7 +41,7 @@ export class Articles {
 	createdAt: Date;
 	
 	@UpdateDateColumn()
-    updateddAt: Date;
+    updatedAt: Date;
 
 	@OneToMany((type) => Comments, (Comments) => Comments.articles, { nullable: true })
 	comments: Comments[];

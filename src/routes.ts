@@ -7,6 +7,7 @@ import {
 	articlesDeleteArticlesAction,
 	articlesPutByIdCommentAction
 } from "./controller/ArticlesSaveAction";
+import { commentsGetAction, commentsPutAction, commentsDeleteAction,  commentsGetImageAction } from "./controller/CommentsAction";
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
@@ -63,6 +64,30 @@ export const AppRoutes = [
 		path: "/articles/:id/newcomment",
 		method: "put",
 		action: articlesPutByIdCommentAction,
+		middlewares: [],
+	},
+	{
+		path: "/admin/comments",
+		method: "get",
+		action: commentsGetAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/comments/:id",
+		method: "put",
+		action: commentsPutAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/comments/:id",
+		method: "delete",
+		action: commentsDeleteAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/comments/:id/image",
+		method: "get",
+		action: commentsGetImageAction,
 		middlewares: [],
 	},
 	{

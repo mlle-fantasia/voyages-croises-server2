@@ -5,6 +5,7 @@ import { Articles } from "../entity/Articles";
 import { Categories } from "../entity/Categories";
 import { Users } from "../entity/Users";
 import { Tags } from "../entity/Tags";
+import { Texts } from "../entity/Texts";
 /// les dépendences
 const fs = require("fs-extra");
 const path = require("path");
@@ -95,15 +96,22 @@ export async function articlesGetByIdAction(request: Request, response: Response
 		response.end("article not found");
 		return;
 	}
-/* 	// on va chercher les autres articles
-	let acticlesaside = await listeAsideGetByIdAction(request.params.id); */
+	let responseData = { article: article, apropos: {}, lastarticles: [] }
+	
+	if (request.query.aside) {
+		const textRepository = getManager().getRepository(Texts);
+		const aproposTxt = await textRepository.findOne({ where: { key: "résumé à propos" } });
+		if (aproposTxt) responseData.apropos = aproposTxt;
+		
+		const articleRepository = getManager().getRepository(Articles);
+		const entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 3, });
+		if (entities.length) responseData.lastarticles = entities;
+	}
 
 
 	// return loaded article, les autres articles
-	let dataResponse = {
-		article,
-	};
-	response.send(dataResponse);
+
+	response.send(responseData);
 }
 
 /**

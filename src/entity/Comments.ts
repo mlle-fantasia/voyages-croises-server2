@@ -23,7 +23,13 @@ export class Comments {
 	email: string;
 
 	@Column({ name: "com_image" , default:1 })
-    image: number;
+	image: string;
+	
+	@Column({ name: "com_image_alt" , default:"" })
+	image_alt: string;
+
+	@Column({ name: "com_siteweb" , default:"" })
+	siteweb: string;
     
 	@CreateDateColumn()
 	createdAt: Date;

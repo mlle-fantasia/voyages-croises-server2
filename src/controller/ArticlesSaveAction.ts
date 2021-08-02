@@ -87,17 +87,21 @@ export async function articlesPutAction(request: Request, response: Response) {
 	// get a post repository to perform operations with post
 	const articleRepository = getManager().getRepository(Articles);
 	// load a artticle by a given post id
-	const article = await articleRepository.findOne(request.params.id);
+	 const article = await articleRepository.findOne(request.params.id);
 
-	 let numImage = Math.floor(Math.random() * 3); // de 0 à 2
+	 let numImage = Math.floor(Math.random() * 6); // de 0 à 5
+	 let files = fs.readdirSync(process.cwd() + "/images");
+	 
 	 let dataComment = {
 		title: request.body.title,
 		contenu: request.body.contenu,
 		visible: request.body.visible,
 		name: request.body.name,
 		email: request.body.email,
-		image:numImage,
-		articleId : article.id
+		siteweb:request.body.siteweb,
+		image: files[numImage],
+		image_alt:"",
+		articles : article
 	 }
 	const commentsRepository = getManager().getRepository(Comments);
 	await commentsRepository.save(dataComment);
