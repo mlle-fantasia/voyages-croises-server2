@@ -3,6 +3,8 @@ import { getManager, getRepository, getConnection, SimpleConsoleLogger } from "t
 /// les entités
 import { Categories } from "../entity/Categories";
 import { Comments } from "../entity/Comments";
+import { Articles } from "../entity/Articles";
+import { articlesDeleteArticlesAction } from "./ArticlesSaveAction";
 /// les dépendences
 const fs = require("fs-extra");
 const path = require("path");
@@ -13,9 +15,20 @@ const path = require("path");
  */
 export async function commentsGetAction(request: Request, response: Response) {
 	const Repository = getManager().getRepository(Comments);
-	const entities = await Repository.find({ where: { visible: false} });
+	const comNotVisible = await Repository.find({ where: { visible: false }, relations: ["articles"], });
+
+	const articleRepository = getManager().getRepository(Articles);
+	let all = await articleRepository.find({ select: ["id", "title", "date"], where: { visible: true }, relations: ["category", "comments"], order: { date: 'DESC' } });
 	
-	response.send(entities);
+	let allCom = all.filter((article) => {
+		return article.comments.length
+	});
+	
+	let comData = {
+		notVisible: comNotVisible,
+		allComments:allCom
+	}
+	response.send(comData);
 }
 
 /**
