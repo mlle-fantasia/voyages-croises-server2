@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn,CreateDateColumn, Column, ManyToOne , OneToMany} from "typeorm";
 import { Articles } from "./Articles";
-import { Responses } from "./Responses";
+import { CommentsResponses } from "./CommentsResponses";
 
 @Entity({ name: "comments" })
 export class Comments {
@@ -37,6 +37,6 @@ export class Comments {
 	@ManyToOne((type) => Articles, (Articles) => Articles.comments)
 	articles: Articles;
 
-	@OneToMany((type) => Responses, (Responses) => Responses.comments)
-	responses: Responses[];
+	@OneToMany((type) => CommentsResponses, (Responses) => Responses.comment, { nullable: true })
+	responses: CommentsResponses[];
 }
