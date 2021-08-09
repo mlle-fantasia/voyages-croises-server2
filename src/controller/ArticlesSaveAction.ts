@@ -89,8 +89,18 @@ export async function articlesPutAction(request: Request, response: Response) {
 	// load a artticle by a given post id
 	 const article = await articleRepository.findOne(request.params.id);
 
-	 let numImage = Math.floor(Math.random() * 6); // de 0 à 5
-	 let files = fs.readdirSync(process.cwd() + "/images");
+	 let files = [];let numImage = 0
+	if (request.headers.authorization) {
+		let token = jwt.verify(request.headers.authorization, process.env.TOKEN_KEY);
+		const userRepository = getManager().getRepository(Users);
+		const user = await userRepository.findOne({ where: { id: token.id } });
+		files = fs.readdirSync(process.cwd() + "/images/useravatars");
+		if(user.firstname === "Marina") numImage = 2
+
+	} else {
+		numImage = Math.floor(Math.random() * 6); // de 0 à 5
+		files = fs.readdirSync(process.cwd() + "/images/avatars");
+	}
 	 
 	 let dataComment = {
 		title: request.body.title,
