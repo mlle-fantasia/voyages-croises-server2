@@ -12,17 +12,30 @@ import { authAction, autoAuthAction } from "./controller/AuthentificationAction"
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
 
+import { getManager, getRepository } from "typeorm";
+import { Users } from "./entity/Users";
 
 import { Request, Response } from "express";
 
 var jwt = require("jsonwebtoken");
 
-function authMiddleware(request: Request, response: Response, next) {
+async function authMiddleware(request: Request, response: Response, next) {
+	let decoded = {id:0};
 	try {
-		jwt.verify(request.headers.authorization, process.env.TOKEN_KEY);
+		 decoded = jwt.verify(request.headers.authorization, process.env.TOKEN_KEY);
+
 		next();
 	} catch (error) {
 		response.status(401).send();
+	}
+	const userRepository = getManager().getRepository(Users);
+	const user = await userRepository.findOne({
+		where: {
+			id: decoded.id,
+		},
+	});
+	if (user) {
+		//request.user = user;
 	}
 }
 

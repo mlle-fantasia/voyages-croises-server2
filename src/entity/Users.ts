@@ -6,6 +6,9 @@ export class Users {
 	@PrimaryGeneratedColumn({ name: "us_id" })
 	id: number;
 
+	@Column({ name: "us_type" , default:""})
+	type: string;
+
 	@Column({ name: "us_email" , default:""})
 	email: string;
 

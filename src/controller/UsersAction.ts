@@ -1,4 +1,3 @@
-import { LOADIPHLPAPI } from "dns";
 import { Request, Response } from "express";
 import { getManager, getRepository, getConnection } from "typeorm";
 import { Users } from "../entity/Users";
@@ -39,8 +38,9 @@ export async function userPutAction(request: Request, response: Response) {
 	const userRepository = getManager().getRepository(Users);
 
 	const user = await userRepository.findOne(request.params.id);
-
+	//console.log("ici",request)
 	user.email = request.body.email;
+	if(request.body.type.value)user.type = request.body.type.value;
 	user.firstname = request.body.firstname;
 	user.birthday = request.body.birthday;
 	if (request.body.password) {
@@ -57,6 +57,7 @@ export async function userPostAction(request: Request, response: Response) {
 
 	let user = new Users();
 	user.email = request.body.email;
+	user.type = request.body.type.value;
 	user.firstname = request.body.firstname;
 	user.password = request.body.password;
 	user.birthday = request.body.birthday;
