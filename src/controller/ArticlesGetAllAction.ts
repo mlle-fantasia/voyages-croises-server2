@@ -17,20 +17,24 @@ var jwt = require("jsonwebtoken");
  * on récupère pas tous les champs juste ceux à afficher
  */
 export async function articlesGetAllAction(request: Request, response: Response) {
-	/* const entities = await getRepository(Articles)
-		.createQueryBuilder("article")
-		.select(["article.id", "article.title", "article.miniature", "article.resume",])
-		.leftJoinAndSelect(Users.articles, "users")
-		.where("article.visible = :visible", { visible: 1 })
-		.orderBy("article.date", "DESC")
-		.getMany(); */
-	let limit = 3
-	if (request.query.page === "home") limit = 6;
+	console.log("je passe", );
 	const articleRepository = getManager().getRepository(Articles);
-	const entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible:true }, relations: ["user", "category" ], order: {date: 'DESC'}, take:limit});
+	let entities = []
+	if (request.query.page === "home") {
+		 entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible: true,  }, relations: ["user", "category"], order: { date: 'DESC' }, take: 6 });
+	}
+	else{
+		if (request.query.category) {
+			const articleCat = getManager().getRepository(Categories);
+			const cat = await articleCat.findOne({ select: ["id", "value", "text"], where: { value: request.query.category } });
+			entities = await articleRepository.find({ select: ["id", "title", "resume", "date"], where: { visible: true, category: {id: cat.id} }, relations: ["user", "category"], order: { date: 'DESC' } });
+		};
+		
+	}
 	
 	response.send(entities);
 }
+
 
 
 
