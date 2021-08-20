@@ -8,12 +8,12 @@ const fs = require("fs-extra");
 const path = require("path");
 
 /**
- * get all pour admin
+ * get all 
  * 
  */
 export async function GetAllCategoriesAction(request: Request, response: Response) {
 	const Repository = getManager().getRepository(Categories);
-	const entities = await Repository.find({relations:["subcategories"]});
+	const entities = await Repository.find({});
 	console.log(entities)
 	
 	response.send(entities);
@@ -35,7 +35,6 @@ console.log(newCat)
 
 	response.send(newCat);
 
-	response.send();
 }
 
 /**
@@ -48,12 +47,11 @@ console.log(newCat)
 	cat.value = request.body.value;
 	cat.text = request.body.text;
 
-	const newCat= Repository.create(cat);
-console.log(newCat)
-	await Repository.save(newCat);
+	const newTag= Repository.create(cat);
+console.log(newTag)
+	await Repository.save(newTag);
 
-	response.send(newCat);
+	response.send(newTag);
 
-	response.send();
 }
 

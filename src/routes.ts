@@ -11,6 +11,7 @@ import { commentsGetAction, commentsPutAction, commentsDeleteAction,  commentsGe
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
+import { AdminPostCategoryAction,AdminPostTagAction, GetAllCategoriesAction } from "./controller/CategoriesAction";
 
 import { getManager, getRepository } from "typeorm";
 import { Users } from "./entity/Users";
@@ -79,6 +80,31 @@ export const AppRoutes = [
 		action: articlesPutByIdCommentAction,
 		middlewares: [],
 	},
+	{
+		path: "/categories",
+		method: "get",
+		action: GetAllCategoriesAction,
+		middlewares: [],
+	},
+	{
+		path: "/admin/categories/add",
+		method: "post",
+		action: AdminPostCategoryAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/tag/add",
+		method: "post",
+		action: AdminPostTagAction,
+		middlewares: [authMiddleware],
+	},
+	
+/* 	{
+		path: "/admin/categories/:id",
+		method: "put",
+		action: AdminPutCategoryAction,
+		middlewares: [authMiddleware],
+	}, */
 	{
 		path: "/admin/comments",
 		method: "get",
