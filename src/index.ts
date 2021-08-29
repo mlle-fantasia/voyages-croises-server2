@@ -35,7 +35,9 @@ createConnection()
 				email: "marinafront@hotmail.fr",
 			},
 		});
-		bcrypt.hash("pass123", 10, function (err, hash) {
+		/* marina.type = "superadmin";
+			userRepository.save(marina); */
+		/* bcrypt.hash("pass123", 10, function (err, hash) {
 			//console.log("1", hash);
 			let user = new Users();
 			user.email = "marinafront@hotmail.fr";
@@ -43,7 +45,7 @@ createConnection()
 			if (!marina.length) {
 				userRepository.save(user);
 			}
-		});
+		}); */
 
 		// register all application routes
 		AppRoutes.forEach((route) => {

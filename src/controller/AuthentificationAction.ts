@@ -24,6 +24,7 @@ const bcrypt = require("bcrypt");
 				id: decoded.id,
 			},
 		});
+	 	delete user.password;
 		// si pas de user
 		if (!user) return response.status(401).send({ err: "user_not_found", errtxt: "utilisateur non trouvé" });
 		console.log(user)
