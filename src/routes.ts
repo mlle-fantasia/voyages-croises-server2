@@ -11,7 +11,7 @@ import { commentsGetAction, commentsPutAction, commentsDeleteAction,  commentsGe
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
-import { AdminPostCategoryAction,AdminPostTagAction, GetAllCategoriesAction } from "./controller/CategoriesAction";
+import { AdminPostCategoryAction,AdminPostTagAction, GetAllCategoriesAction, AdminGetCategoryAction, AdminGetOneCategoryAction, AdminPutCategoryAction, AdminDeleteCategoryAction } from "./controller/CategoriesAction";
 
 import { getManager, getRepository } from "typeorm";
 import { Users } from "./entity/Users";
@@ -87,6 +87,18 @@ export const AppRoutes = [
 		middlewares: [],
 	},
 	{
+		path: "/admin/categories/list",
+		method: "get",
+		action: AdminGetCategoryAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/categories/:id",
+		method: "get",
+		action: AdminGetOneCategoryAction,
+		middlewares: [authMiddleware],
+	},
+	{
 		path: "/admin/categories/add",
 		method: "post",
 		action: AdminPostCategoryAction,
@@ -98,13 +110,18 @@ export const AppRoutes = [
 		action: AdminPostTagAction,
 		middlewares: [authMiddleware],
 	},
-	
-/* 	{
+	{
 		path: "/admin/categories/:id",
 		method: "put",
 		action: AdminPutCategoryAction,
 		middlewares: [authMiddleware],
-	}, */
+	},
+	{
+		path: "/admin/categories/:id",
+		method: "delete",
+		action: AdminDeleteCategoryAction,
+		middlewares: [authMiddleware],
+	},
 	{
 		path: "/admin/comments",
 		method: "get",

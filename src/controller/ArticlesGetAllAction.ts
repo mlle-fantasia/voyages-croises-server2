@@ -6,6 +6,7 @@ import { Categories } from "../entity/Categories";
 import { Users } from "../entity/Users";
 import { Tags } from "../entity/Tags";
 import { Texts } from "../entity/Texts";
+import { Comments } from "../entity/Comments";
 /// les dépendences
 const fs = require("fs-extra");
 const path = require("path");
@@ -45,6 +46,13 @@ export async function articlesGetAllAction(request: Request, response: Response)
  export async function adminHomeStatsAction(request: Request, response: Response) {
 	 const articleRepository = getManager().getRepository(Articles);
 
+	// nombre d'article
+	const nbArticle = await articleRepository.count({ visible: true });
+	// nombre de commentaire visibles et non visibles
+	const comRepository = getManager().getRepository(Comments);
+	const nbComVisible = await comRepository.count({ visible: true });
+	const nbComNotVisible = await comRepository.count({ visible: false });
+
 	 // dernier article publié sur le site
 	 const lastArticle = await articleRepository.find({ select: ["id", "title", "resume", "date", ], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 1, });
 
@@ -63,7 +71,10 @@ export async function articlesGetAllAction(request: Request, response: Response)
 	 
 	 let responseData = {
 		 lastArticle,
-		 lastArticleUser
+		 lastArticleUser,
+		 nbArticle,
+		 nbComVisible,
+		 nbComNotVisible
 	 }
 
 	response.send(responseData);
