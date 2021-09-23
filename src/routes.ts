@@ -11,7 +11,7 @@ import { commentsGetAction, commentsPutAction, commentsDeleteAction,  commentsGe
 import { authAction, autoAuthAction } from "./controller/AuthentificationAction";
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
-import { AdminPostCategoryAction,AdminPostTagAction, GetAllCategoriesAction, AdminGetCategoryAction, AdminGetOneCategoryAction, AdminPutCategoryAction, AdminDeleteCategoryAction } from "./controller/CategoriesAction";
+import { AdminPostCategoryAction,AdminPostTagAction, GetAllCategoriesAction, AdminGetCategoryAction, AdminGetOneCategoryAction, AdminPutCategoryAction, AdminDeleteCategoryAction, AdminGetOneTagAction, AdminPutTagAction, AdminDeleteTagAction  } from "./controller/CategoriesAction";
 
 import { getManager, getRepository } from "typeorm";
 import { Users } from "./entity/Users";
@@ -86,12 +86,14 @@ export const AppRoutes = [
 		action: GetAllCategoriesAction,
 		middlewares: [],
 	},
+	/* catégories et tags */
 	{
 		path: "/admin/categories/list",
 		method: "get",
 		action: AdminGetCategoryAction,
 		middlewares: [authMiddleware],
 	},
+	/*  les catégories */
 	{
 		path: "/admin/categories/:id",
 		method: "get",
@@ -105,23 +107,43 @@ export const AppRoutes = [
 		middlewares: [authMiddleware],
 	},
 	{
-		path: "/admin/tag/add",
-		method: "post",
-		action: AdminPostTagAction,
-		middlewares: [authMiddleware],
-	},
-	{
 		path: "/admin/categories/:id",
 		method: "put",
 		action: AdminPutCategoryAction,
 		middlewares: [authMiddleware],
 	},
 	{
-		path: "/admin/categories/:id",
+		path: "/admin/categories/delete/:id",
 		method: "delete",
 		action: AdminDeleteCategoryAction,
 		middlewares: [authMiddleware],
 	},
+	/* les tags */
+	{
+		path: "/admin/tags/add",
+		method: "post",
+		action: AdminPostTagAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/tags/:id",
+		method: "get",
+		action: AdminGetOneTagAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/tags/:id",
+		method: "put",
+		action: AdminPutTagAction,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/tags/:id",
+		method: "delete",
+		action: AdminDeleteTagAction,
+		middlewares: [authMiddleware],
+	},
+	/*  les comments */
 	{
 		path: "/admin/comments",
 		method: "get",

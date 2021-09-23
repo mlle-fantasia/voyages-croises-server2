@@ -2,11 +2,9 @@ import { Request, Response } from "express";
 import { getManager, getRepository, getConnection, SimpleConsoleLogger } from "typeorm";
 /// les entités
 import { Categories } from "../entity/Categories";
-import { Articles } from "../entity/Articles";
 import { Tags } from "../entity/Tags";
 /// les dépendences
-const fs = require("fs-extra");
-const path = require("path");
+
 
 /**
  * get all 
@@ -20,17 +18,20 @@ export async function GetAllCategoriesAction(request: Request, response: Respons
 }
 
 /**
- * get all pour admin avec les articles
+ * get all tags et categories pour admin avec les articles
  * 
  */
  export async function AdminGetCategoryAction(request: Request, response: Response) {
 	const Repository = getManager().getRepository(Categories);
-	const entities = await Repository.find({relations: ["articles"]});
+	 const cats = await Repository.find({ relations: ["articles"] });
+	 
+	 const Repository2 = getManager().getRepository(Tags);
+	const tags = await Repository2.find({relations: ["articles"]});
 	
-	response.send(entities);
+	response.send({categories:cats, tags:tags});
 }
 /**
- * get one pour admin  avec les articles
+ * get one pour admin avec les articles
  * 
  */
  export async function AdminGetOneCategoryAction(request: Request, response: Response) {
@@ -51,7 +52,6 @@ export async function AdminPostCategoryAction(request: Request, response: Respon
 	cat.text = request.body.text;
 
 	const newCat= Repository.create(cat);
-console.log(newCat)
 	await Repository.save(newCat);
 
 	response.send(newCat);
@@ -89,6 +89,8 @@ export async function AdminDeleteCategoryAction(request: Request, response: Resp
 
 /// les tags
 
+
+
 /**
  *  * post 
  */
@@ -100,10 +102,43 @@ export async function AdminDeleteCategoryAction(request: Request, response: Resp
 	cat.text = request.body.text;
 
 	const newTag= Repository.create(cat);
-console.log(newTag)
 	await Repository.save(newTag);
 
 	response.send(newTag);
 
+ }
+
+ /**
+ * get one pour admin avec les articles
+ * 
+ */
+  export async function AdminGetOneTagAction(request: Request, response: Response) {
+	const Repository = getManager().getRepository(Tags);
+	 const tag = await Repository.findOne(request.params.id, {relations: ["articles"]});
+	
+	response.send(tag);
+}
+
+/**
+ * admin put 
+ */
+ export async function AdminPutTagAction(request: Request, response: Response) {
+	const Repository = getManager().getRepository(Tags);
+	 const tag = await Repository.findOne(request.params.id);
+	 
+	 tag.value = request.body.value;
+	 tag.text = request.body.text;
+
+	// save received post
+	await Repository.save(tag);
+
+	response.send(tag);
+ }
+/**
+ * admin delete 
+ */
+export async function AdminDeleteTagAction(request: Request, response: Response) {
+	await getConnection().createQueryBuilder().delete().from(Tags).where("id = :id", { id: request.params.id }).execute();
+	response.send("ok");
 }
 
