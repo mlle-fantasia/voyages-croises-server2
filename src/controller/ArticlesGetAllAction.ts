@@ -51,7 +51,12 @@ export async function articlesGetAllAction(request: Request, response: Response)
 	// nombre de commentaire visibles et non visibles
 	const comRepository = getManager().getRepository(Comments);
 	const nbComVisible = await comRepository.count({ visible: true });
-	const nbComNotVisible = await comRepository.count({ visible: false });
+	 const nbComNotVisible = await comRepository.count({ visible: false });
+	 // nombre de tags et de catégories
+	 const tagRepository = getManager().getRepository(Tags);
+	 const nbTags = await tagRepository.count();
+	 const catRepository = getManager().getRepository(Categories);
+	const nbCategories = await catRepository.count();
 
 	 // dernier article publié sur le site
 	 const lastArticle = await articleRepository.find({ select: ["id", "title", "resume", "date", ], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 1, });
@@ -74,7 +79,9 @@ export async function articlesGetAllAction(request: Request, response: Response)
 		 lastArticleUser,
 		 nbArticle,
 		 nbComVisible,
-		 nbComNotVisible
+		 nbComNotVisible,
+		 nbCategories,
+		 nbTags
 	 }
 
 	response.send(responseData);
