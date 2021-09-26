@@ -121,26 +121,6 @@ export async function articlesPutAction(request: Request, response: Response) {
 }
 
 
-// /**
-//  * 
-//  * @param request 
-//  * @param response
-//  * put d'un article pour modifier le champs hidden 
-//  *  
-//  */
-// export async function articlesHiddenAction(request: Request, response: Response) {
-// 	// get a post repository to perform operations with post
-// 	const articleRepository = getManager().getRepository(Articles);
-// 	// load a artticle by a given post id
-// 	const article = await articleRepository.findOne(request.params.id);
-// 	article.visible = request.body.visible;
-// 	// save received post
-// 	await articleRepository.save(article);
-
-// 	// return saved post back
-// 	response.send(article);
-// }
-
 /**
  * 
  * @param request 

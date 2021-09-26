@@ -10,7 +10,10 @@ export class Files {
     name: string;
 
     @Column({ name: "fi_alt", default:"" })
-    alt: string;
+	alt: string;
+	
+	@Column({ name: "fi_description", default:"" })
+    description: string;
     
     @Column({ name: "fi_ext", default:"" })
     ext: string;

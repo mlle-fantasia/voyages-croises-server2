@@ -128,9 +128,9 @@ export async function adminPagePutAction(request: Request, response: Response) {
 export async function adminPageDeleteAction(request: Request, response: Response) {
 	// delete textes
 	await getConnection().createQueryBuilder().delete().from(Texts).where("pagesId = :pagesId", { pagesId: request.params.id }).execute();
-
 	// delete page
 	await getConnection().createQueryBuilder().delete().from(Pages).where("id = :id", { id: request.params.id }).execute();
+	
 	response.send("ok");
 
 }
