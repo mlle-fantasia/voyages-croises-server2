@@ -59,7 +59,13 @@ export async function articlesGetAllAction(request: Request, response: Response)
 	const nbCategories = await catRepository.count();
 
 	 // dernier article publié sur le site
-	 const lastArticle = await articleRepository.find({ select: ["id", "title", "resume", "date", ], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 1, });
+	//  const lastArticle = await articleRepository.find({ select: ["id", "title", "resume", "date",], where: { visible: true }, relations: ["user", "category"], order: { date: 'DESC' }, take: 1, });
+	const lastArticle = await getRepository(Articles).createQueryBuilder("article")
+	 .leftJoinAndSelect("article.user", "user")
+	 .leftJoinAndSelect("article.category", "category")
+		  .where('article.visible = :visible', { visible: true })
+		  .orderBy("article.date", "DESC").limit(1)
+	 .getOne();
 
 	 // dernier article publié par l'utilisateur
 	 //// get id  user
