@@ -85,7 +85,7 @@ export async function commentPostResponseAction(request: Request, response: Resp
 	const Repository = getManager().getRepository(Comments);
 	 const comment = await Repository.findOne(request.params.id);
 	 
-	 console.log(comment)
+	 //console.log(comment)
 	
 	let filenameDest = process.cwd() + "/images/" + comment.image ;
 	if (!fs.existsSync(filenameDest)) return response.send("not_found");

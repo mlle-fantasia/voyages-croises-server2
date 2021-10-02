@@ -9,6 +9,30 @@ var slug = require("slug");
 
 
 /**
+ * get file du dossier upload route publique
+ * route : "/files/:id"
+ * 
+ */
+export async function GetFileAction(request: Request, response: Response) {
+	console.log("request.params.id", request.params.id);
+	let filenameDest = "";
+	if (!Number.isInteger(parseInt(request.params.id))) {
+		if(request.params.id === "iconimage1")filenameDest = process.cwd() + "/images/icon-images-solid1.png";
+		if(request.params.id === "iconimage2")filenameDest = process.cwd() + "/images/icon-images-solid2.png";
+		if(request.params.id === "iconimage3")filenameDest = process.cwd() + "/images/icon-images-solid3.png";
+	} else {
+		const Repository = getManager().getRepository(Files);
+		const file = await Repository.findOne(request.params.id);
+		console.log('file', file);
+		filenameDest = process.cwd() + "/uploads/images/" + request.params.id + file.ext;
+		if (!fs.existsSync(filenameDest)) return response.send("not_found");
+	}
+   let readStream = fs.createReadStream(filenameDest);
+   readStream.pipe(response);
+ }
+
+
+/**
  * get all files de la tables files
  * 
  */

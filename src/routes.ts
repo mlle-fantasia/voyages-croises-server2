@@ -12,7 +12,7 @@ import { authAction, autoAuthAction } from "./controller/AuthentificationAction"
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
 import { AdminPostCategoryAction, AdminPostTagAction, GetAllCategoriesAction, AdminGetCategoryAction, AdminGetOneCategoryAction, AdminPutCategoryAction, AdminDeleteCategoryAction, AdminGetOneTagAction, AdminPutTagAction, AdminDeleteTagAction } from "./controller/CategoriesAction";
-import { GetAllFilesAction, GetOneFileAction , AdminPutFileAction, AdminDeleteFileAction , PostFilesAction, PostFilesImageAction} from "./controller/FilesAction";
+import {GetFileAction, GetAllFilesAction, GetOneFileAction , AdminPutFileAction, AdminDeleteFileAction , PostFilesAction, PostFilesImageAction} from "./controller/FilesAction";
 
 import { getManager, getRepository } from "typeorm";
 import { Users } from "./entity/Users";
@@ -329,6 +329,12 @@ export const AppRoutes = [
 		middlewares: [authMiddleware],
 	},
 	/// files
+	{
+		path: "/files/:id",
+		method: "get",
+		action: GetFileAction,
+		middlewares: [],
+	},
 	{
 		path: "/admin/files",
 		method: "post",

@@ -40,7 +40,7 @@ export async function articlesGetAllAction(request: Request, response: Response)
 
 
 /**
- *  * get all
+ *  * get stats home
  * get les stats à afficher sur  la page d'accueil admin : le derniers article publié,  le dernier article de l'utilisateur, les nouveau commentaires,  le nombre d'articles total, le nombre de  followers...
  */
  export async function adminHomeStatsAction(request: Request, response: Response) {
@@ -96,7 +96,7 @@ export async function articlesGetAllAction(request: Request, response: Response)
 
 
 /**
- *  * get all
+ *  * get all for admin
  * Loads all posts from the database y compris ceux hidden. cette fonction sert à afficher sur l'espace admin
  * on récupère pas tous les champs juste ceux à afficher
  */
@@ -124,8 +124,43 @@ export async function articlesGetByIdAction(request: Request, response: Response
 		response.end("article not found");
 		return;
 	}
+	// remplacer les images 
+	// exemple : {{{insertImage:11:template:one}}}
+	const regex = new RegExp('({{{[a-zA-Z0-9,:]*}}})', 'g');
+	const found = article.contenu.match(regex);
+	console.log(found,)
+	if (found && found.length) {
+		for (let i = 0; i < found.length; i++) {
+			let str1 = found[i];
+			let str = str1.substring(3, str1.length - 3)
+			let tab = str.split(":");
+			let htmlImage = "";
+			let template = tab[3];
+			// template one
+			if (template === "one") {
+				let id = tab[1];
+				htmlImage = `<div><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+			}
+			//template masonry
+			if (template === "masonry") {
+				let tabids = tab[1].split(",");
+				htmlImage = `<div v-masonry="containerId" transition-duration="0.3s" item-selector=".item">`;
+				for (let j = 0; j < tabids.length; j++) {
+					const id = tabids[j];
+					htmlImage += `<div v-masonry-tile class="item" class="mb-4"><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+				}
+				htmlImage +=`</div>`
+			}
+			//template flex
+			if (template === "flex") {
+				
+			}
+			article.contenu = article.contenu.replace(str1, htmlImage);
+
+		}
+	}
+
 	let responseData = { article: article, apropos: {}, lastarticles: [] }
-	
 	if (request.query.aside) {
 		const textRepository = getManager().getRepository(Texts);
 		const aproposTxt = await textRepository.findOne({ where: { key: "résumé à propos" } });
@@ -138,13 +173,12 @@ export async function articlesGetByIdAction(request: Request, response: Response
 
 
 	// return loaded article, les autres articles
-
 	response.send(responseData);
 }
 
 /**
- *  * get by id
- * Loads articles by a given id. pour l'espace admin garge aussi les catégores
+ *  * get by id admin
+ * Loads articles by a given id. pour l'espace admin charge aussi les catégores
  */
  export async function adminArticlesGetByIdAction(request: Request, response: Response) {
 	 let dataResponse = {article:{},categories:[], tags:[]};
