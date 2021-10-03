@@ -147,13 +147,19 @@ export async function articlesGetByIdAction(request: Request, response: Response
 				htmlImage = `<div v-masonry="containerId" transition-duration="0.3s" item-selector=".item">`;
 				for (let j = 0; j < tabids.length; j++) {
 					const id = tabids[j];
-					htmlImage += `<div v-masonry-tile class="item" class="mb-4"><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+					htmlImage += `<div v-masonry-tile class="mb-4 item"><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
 				}
 				htmlImage +=`</div>`
 			}
 			//template flex
 			if (template === "flex") {
-				
+				let tabids = tab[1].split(",");
+				htmlImage = `<div class="d-flex flex-wrap p-2 align-items-stretch">`;
+				for (let j = 0; j < tabids.length; j++) {
+					const id = tabids[j];
+					htmlImage += `<div class=" p-1 flex-fill" style="max-width:50%;"><img class="img-fluid h-100 template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+				}
+				htmlImage +=`</div>`
 			}
 			article.contenu = article.contenu.replace(str1, htmlImage);
 
