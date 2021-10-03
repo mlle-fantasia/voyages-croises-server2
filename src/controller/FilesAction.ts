@@ -24,7 +24,7 @@ export async function GetFileAction(request: Request, response: Response) {
 		const Repository = getManager().getRepository(Files);
 		const file = await Repository.findOne(request.params.id);
 		console.log('file', file);
-		filenameDest = process.cwd() + "/uploads/images/" + request.params.id + file.ext;
+		filenameDest = process.cwd() + "/uploads/"+request.params.type+"/" + request.params.id + file.ext;
 		if (!fs.existsSync(filenameDest)) return response.send("not_found");
 	}
    let readStream = fs.createReadStream(filenameDest);
@@ -44,12 +44,80 @@ export async function GetAllFilesAction(request: Request, response: Response) {
 }
 
 /**
+ * get all files de la tables files
+ * 
+ */
+ export async function GetFileTypeAction(request: Request, response: Response) {
+	const Repository = getManager().getRepository(Files);
+	const entities = await Repository.find({where:{ type: request.params.type }, order: { createdAt: 'DESC' }});
+	
+	response.send(entities);
+}
+
+//// admin 
+ /**
+ * on recoit un tableau des fichiers instagram, il faut supprimer la diférence
+ *  
+ */
+export async function PostFilesInstagram1Action(req, res) {
+	const Repository = getManager().getRepository(Files);
+	const entities = await Repository.find({ where: { type: "instagram" } });
+	console.log("entities", entities, req.body);
+	for (let i = 0; i < entities.length; i++) {
+		const file = entities[i];
+		let index = req.body.findIndex((file1) => {
+			return file1.id === file.id
+		});
+		console.log("index", index, file.id );
+		if (index < 0) {
+			let filenameOrigin = process.cwd() + "/uploads/instagram/" + file.id + file.ext;
+			if(fs.existsSync(filenameOrigin))fs.removeSync(filenameOrigin);
+			await getConnection().createQueryBuilder().delete().from(Files).where("id = :id", { id: file.id }).execute();
+		} else {
+			const fileToUpdate = await Repository.findOne(file.id);
+
+			fileToUpdate.alt = req.body[index].alt;
+			fileToUpdate.description = req.body[index].description;
+		   	await Repository.save(fileToUpdate);
+		}
+	}
+
+	res.send("ok");
+}
+ /**
+ * 
+ *  
+ */
+  export async function PostFilesInstagram2Action(req, res) {
+	const Repository = getManager().getRepository(Files);
+	let ext = path.extname(req.files.image.name).toLowerCase();
+	let name = slug(path.parse(req.files.image.name).name) + ext;
+	console.log("req.files", req.files)
+	// save in table
+	let file = new Files();
+	file.alt = req.body.alt ? req.body.alt : "";
+	file.description = req.body.description ? req.body.description : "";
+	file.ext = ext;
+	file.name = name;
+	file.type = "instagram";
+	let fileSaved = await Repository.save(file);
+	  
+	// save in uploads
+	fs.ensureDirSync(process.cwd() + "/uploads/instagram");
+	let filenameOrigin = process.cwd() + "/uploads/instagram/" + fileSaved.id + ext;
+	req.files.image.mv(filenameOrigin, async function (err) {
+		if (err) return res.status(500).send(err);
+
+		res.send("ok");
+	});
+}
+
+/**
  * get file du dossier upload
  * route : "/admin/files/:id/miniature"
  * 
  */
  export async function GetOneFileAction(request: Request, response: Response) {
-	 console.log("je passe ici", request.params.id )
 	const Repository = getManager().getRepository(Files);
 	 const file = await Repository.findOne(request.params.id);
 

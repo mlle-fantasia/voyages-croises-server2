@@ -12,7 +12,7 @@ import { authAction, autoAuthAction } from "./controller/AuthentificationAction"
 import {siteGetOnePageAction, adminGetAllPagesAction, adminGetOnePageAction , adminPagePostAction ,adminPageDeleteAction,  adminPagePutAction, adminPagePostImageAction, pagesGetImageAction} from "./controller/PagesAction";
 import { adminPutTextsAction, adminPostTextAction  } from "./controller/TextsAction";
 import { AdminPostCategoryAction, AdminPostTagAction, GetAllCategoriesAction, AdminGetCategoryAction, AdminGetOneCategoryAction, AdminPutCategoryAction, AdminDeleteCategoryAction, AdminGetOneTagAction, AdminPutTagAction, AdminDeleteTagAction } from "./controller/CategoriesAction";
-import {GetFileAction, GetAllFilesAction, GetOneFileAction , AdminPutFileAction, AdminDeleteFileAction , PostFilesAction, PostFilesImageAction} from "./controller/FilesAction";
+import {GetFileAction,GetFileTypeAction, GetAllFilesAction,PostFilesInstagram1Action,PostFilesInstagram2Action, GetOneFileAction , AdminPutFileAction, AdminDeleteFileAction , PostFilesAction, PostFilesImageAction} from "./controller/FilesAction";
 
 import { getManager, getRepository } from "typeorm";
 import { Users } from "./entity/Users";
@@ -330,11 +330,31 @@ export const AppRoutes = [
 	},
 	/// files
 	{
-		path: "/files/:id",
+		path: "/files/:id/:type",
 		method: "get",
 		action: GetFileAction,
 		middlewares: [],
 	},
+	{
+		path: "/files/:type",
+		method: "get",
+		action: GetFileTypeAction,
+		middlewares: [],
+	},
+	// post files instagramm
+	{
+		path: "/admin/files/instagram1",
+		method: "post",
+		action: PostFilesInstagram1Action,
+		middlewares: [authMiddleware],
+	},
+	{
+		path: "/admin/files/instagram2",
+		method: "post",
+		action: PostFilesInstagram2Action,
+		middlewares: [authMiddleware],
+	},
+	///
 	{
 		path: "/admin/files",
 		method: "post",

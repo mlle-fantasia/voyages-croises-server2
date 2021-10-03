@@ -6,6 +6,9 @@ export class Files {
 	@PrimaryGeneratedColumn({ name: "fi_id" })
 	id: number;
 
+	@Column({ name: "fi_type", default:"" })
+	type: string;
+
 	@Column({ name: "fi_name", default:"" })
     name: string;
 

@@ -139,7 +139,7 @@ export async function articlesGetByIdAction(request: Request, response: Response
 			// template one
 			if (template === "one") {
 				let id = tab[1];
-				htmlImage = `<div><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+				htmlImage = `<div><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}/images" alt="image"/></div>`;
 			}
 			//template masonry
 			if (template === "masonry") {
@@ -147,7 +147,7 @@ export async function articlesGetByIdAction(request: Request, response: Response
 				htmlImage = `<div v-masonry="containerId" transition-duration="0.3s" item-selector=".item">`;
 				for (let j = 0; j < tabids.length; j++) {
 					const id = tabids[j];
-					htmlImage += `<div v-masonry-tile class="mb-4 item"><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+					htmlImage += `<div v-masonry-tile class="mb-4 item"><img class="img-fluid template-image-${template}" src="${process.env.SERVER_URL}/files/${id}/images" alt="image"/></div>`;
 				}
 				htmlImage +=`</div>`
 			}
@@ -157,7 +157,7 @@ export async function articlesGetByIdAction(request: Request, response: Response
 				htmlImage = `<div class="d-flex flex-wrap p-2 align-items-stretch">`;
 				for (let j = 0; j < tabids.length; j++) {
 					const id = tabids[j];
-					htmlImage += `<div class=" p-1 flex-fill" style="max-width:50%;"><img class="img-fluid h-100 template-image-${template}" src="${process.env.SERVER_URL}/files/${id}" alt="image"/></div>`;
+					htmlImage += `<div class=" p-1 flex-fill" style="max-width:50%;"><img class="img-fluid h-100 template-image-${template}" src="${process.env.SERVER_URL}/files/${id}/images" alt="image"/></div>`;
 				}
 				htmlImage +=`</div>`
 			}
