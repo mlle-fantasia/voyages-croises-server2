@@ -4,6 +4,12 @@ import { Users } from "../entity/Users";
 const fs = require("fs-extra");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const mustache = require("mustache");
+
+const includeMail = {
+	header: fs.readFileSync("viewsemail/headerMail.html", "utf8"),
+	footer: fs.readFileSync("viewsemail/footerMail.html", "utf8"),
+};
 
 /**
  * Loads all posts from the database.
@@ -72,7 +78,47 @@ export async function userPostAction(request: Request, response: Response) {
 
 
 export async function newMessageAction(request: Request, response: Response) {
-	console.log("request.body", request.body,)
-	response.send("ok");
+	console.log( process.env.MAILJET_APIKEY,process.env.MAILJET_SECRETKEY )
+	const mailjet = require("node-mailjet").connect(process.env.MAILJET_APIKEY, process.env.MAILJET_SECRETKEY);
+	let obj = {
+		name: request.body.name,
+		email:request.body.email,
+		message: request.body.message,
+	};
+	let html = fs.readFileSync("viewsemail/contactUs.html", "utf8");
+	let email = mustache.render(html, obj, includeMail);
+	const requete = mailjet.post("send", { version: "v3.1" }).request({
+		Messages: [
+			{
+				From: {
+					Email: "marinafront@hotmail.fr",
+					Name: "voyages-croises",
+				},
+				To: [
+					{
+						Email: "marinafront@hotmail.fr",
+						Name: "voyages-croises",
+					},
+				],
+				Subject: "Voyages croisés : Nouveau message ",
+				TextPart: "",
+				HTMLPart: email,
+				CustomID: "AppGettingStartedTest",
+			},
+		],
+	});
+	requete
+		.then((result) => {
+			response.send({ success: "message_envoye", successtxt: "Votre message a bien été envoyé" });
+		})
+		.catch((err) => {
+			console.log(err);
+			response.send({ err: "message_error", errtxt: "Nous sommes désolé, une erreur est survenue" });
+		}); 
+	
+
+
+
+	//response.send("ok");
 }
 

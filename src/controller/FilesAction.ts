@@ -38,7 +38,7 @@ export async function GetFileAction(request: Request, response: Response) {
  */
 export async function GetAllFilesAction(request: Request, response: Response) {
 	const Repository = getManager().getRepository(Files);
-	const entities = await Repository.find({});
+	const entities = await Repository.find({where:{ type: request.query.type }});
 	
 	response.send(entities);
 }
@@ -68,6 +68,7 @@ export async function PostFilesInstagram1Action(req, res) {
 		let index = req.body.findIndex((file1) => {
 			return file1.id === file.id
 		});
+		fs.ensureDirSync(process.cwd() + "/uploads/instagram");
 		console.log("index", index, file.id );
 		if (index < 0) {
 			let filenameOrigin = process.cwd() + "/uploads/instagram/" + file.id + file.ext;

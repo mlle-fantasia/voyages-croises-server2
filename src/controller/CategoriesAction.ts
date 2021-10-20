@@ -12,7 +12,7 @@ import { Tags } from "../entity/Tags";
  */
 export async function GetAllCategoriesAction(request: Request, response: Response) {
 	const Repository = getManager().getRepository(Categories);
-	const entities = await Repository.find({});
+	const entities = await Repository.find({ relations: ["articles"] },);
 	
 	response.send(entities);
 }

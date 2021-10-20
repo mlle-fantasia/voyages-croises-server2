@@ -42,7 +42,9 @@
 		"express-fileupload": "^1.2.0",
 		"fs-extra": "^9.0.1",
 		"jsonwebtoken": "^8.5.1",
+		"mustache": "^4.2.0",
 		"mysql": "^2.15.0",
+		"node-mailjet": "^3.3.4",
 		"slug": "^5.1.0",
 		"typeorm": "^0.2.0"
 	},
